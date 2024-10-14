@@ -42,11 +42,6 @@ public class PatientRestController {
         return ResponseEntity.created(new URI("patient/"+p.getId())).build();
     }
 
-    @DeleteMapping(path = "/patient/{id}")
-    public void delete(@PathVariable("id") Integer id){
-        service.removeOne(id);
-    }
-
 
     @ExceptionHandler
     public ResponseEntity<String> handle(PatientNotFoundException ex){

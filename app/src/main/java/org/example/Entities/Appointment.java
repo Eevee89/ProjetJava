@@ -32,7 +32,7 @@ public class Appointment {
     @Column(nullable = false)
     private Date time;
 
-    public Appointment(Integer id, Center centerId, Patient patientId, Staff doctorId, Date time) {
+    public Appointment(int id, Center centerId, Patient patientId, Staff doctorId, Date time) {
         this.id = id;
         this.centerId = centerId;
         this.patientId = patientId;
@@ -43,11 +43,11 @@ public class Appointment {
     public Appointment() {
     }
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 

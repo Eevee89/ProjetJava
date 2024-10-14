@@ -32,8 +32,4 @@ public class PatientService {
     public void create(Patient p){
         patients.add(p);
     }
-
-    public void removeOne(Integer id){
-        patients.removeIf(p->p.getId().equals(id));
-    }
 }

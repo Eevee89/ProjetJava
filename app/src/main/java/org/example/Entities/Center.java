@@ -7,7 +7,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToOne;
 
 @Entity
 public class Center {
@@ -17,21 +19,19 @@ public class Center {
     private int id;
 
     @Column(nullable = false)
-    private String address;
-
-    @Column(nullable = false)
     private String phone;
 
-    @OneToMany(mappedBy = "centerId")
+    @ManyToMany(mappedBy = "centers")
     private List<Staff> staff;
 
-    @OneToMany(mappedBy = "center")
-    private List<Address> addresses;
+    @OneToOne
+    @JoinColumn(name = "address_id", nullable = false)
+    private Address address;
 
-    public Center(Integer id, String phone, List<Address> addresses) {
+    public Center(Integer id, String phone, Address address) {
         this.id = id;
         this.phone = phone;
-        this.addresses = addresses;
+        this.address = address;
     }
 
     public Center() {
@@ -53,11 +53,11 @@ public class Center {
         this.phone = phone;
     }
 
-    public List<Address> getAddress() {
-        return addresses;
+    public Address getAddress() {
+        return address;
     }
 
-    public void setAddress(List<Address> addresses) {
-        this.addresses = addresses;
+    public void setAddress(Address address) {
+        this.address = address;
     }
 }
