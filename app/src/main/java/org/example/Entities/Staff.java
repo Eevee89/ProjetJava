@@ -1,11 +1,15 @@
 package org.example.Entities;
 
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 
 @Entity
@@ -24,29 +28,36 @@ public class Staff {
     @Column(nullable = false)
     private String phone;
 
-    @ManyToOne
-    @JoinColumn(name = "center_id")
-    private Center centerId;
+    @ManyToMany
+    @JoinTable(name = "staff_centers",
+               joinColumns = @JoinColumn(name = "staff_id"),
+               inverseJoinColumns = @JoinColumn(name = "center_id"))
+    private List<Center> centers;
 
-    private Integer privilege;
+    private int privilege;
 
-    public Staff(Integer id, String firstName, String lastName, String phone, Center centerId, Integer privilege) {
+    @ManyToMany
+    @JoinTable(name = "staff_work_times",
+               joinColumns = @JoinColumn(name = "staff_id"),
+               inverseJoinColumns = @JoinColumn(name = "work_time_id"))
+    private List<WorkTime> workTimes;
+
+    public Staff(int id, String firstName, String lastName, String phone, int privilege) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.phone = phone;
-        this.centerId = centerId;
         this.privilege = privilege;
     }
 
     public Staff() {
     }
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -74,19 +85,11 @@ public class Staff {
         this.phone = phone;
     }
 
-    public Center getCenterId() {
-        return centerId;
-    }
-
-    public void setCenterId(Center centerId) {
-        this.centerId = centerId;
-    }
-
-    public Integer getPrivilege() {
+    public int getPrivilege() {
         return privilege;
     }
 
-    public void setPrivilege(Integer privilege) {
+    public void setPrivilege(int privilege) {
         this.privilege = privilege;
     }
 }

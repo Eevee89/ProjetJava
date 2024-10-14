@@ -5,8 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 
 
 @Entity
@@ -25,11 +24,7 @@ public class Address {
     @Column(nullable = false)
     private String zipCode;
 
-    @ManyToOne  
-    @JoinColumn(name = "center_id")
-    private Center center;
-
-    public Address(Integer id, String street, String city, String zipCode) {
+    public Address(int id, String street, String city, String zipCode) {
         this.id = id;
         this.street = street;
         this.city = city;
@@ -39,11 +34,11 @@ public class Address {
     public Address() {
     }
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 

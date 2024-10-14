@@ -9,7 +9,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.OneToMany;
 
 
@@ -35,8 +35,8 @@ public class Patient {
 
     private String email;
 
-    @ManyToOne
-    @JoinColumn(name = "address_id")
+    @OneToOne
+    @JoinColumn(name = "address_id", nullable = false)
     private Address address;
 
     private Date birthDate;
