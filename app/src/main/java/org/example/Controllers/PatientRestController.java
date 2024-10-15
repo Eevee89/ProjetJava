@@ -26,14 +26,26 @@ public class PatientRestController {
     private PatientService service;
 
     @GetMapping(path = "/patients")
-    public List<Patient> findAll(@RequestParam(name = "firstName", required = false)String filterByName){
-        filterByName = filterByName == null ? "" : filterByName;
-        return service.findAll(filterByName );
-    }
+    public List<Patient> findAll(@RequestParam(name = "firstName", required = false)String filterByName,
+                                @RequestParam(name = "city", required = false)String city){
 
+        String[] names = filterByName.split(",");
+        String[] cities = city.split(",");
+
+        if (cities[0] == "") {
+            if (names[0] == "") {
+                return service.fetchAll();
+            }
+            return service.findByName(names);
+        }
+        if (names[0] == "") {
+            return service.findByCity(cities);   
+        }
+        return service.findAll(names, cities);
+    }
     
     @GetMapping(path = "/patient/{id}")
-    public Patient findAll(@PathVariable("id") Integer id) throws PatientNotFoundException{
+    public Patient findById(@PathVariable("id") Integer id) throws PatientNotFoundException{
         return service.findOne(id);
     }
 
@@ -48,5 +60,4 @@ public class PatientRestController {
     public ResponseEntity<String> handle(PatientNotFoundException ex){
         return ResponseEntity.badRequest().body("Le patient n'existe pas\n");
     }
-
 }

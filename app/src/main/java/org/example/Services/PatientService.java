@@ -16,10 +16,21 @@ public class PatientService {
     
     @Autowired
     private PatientRepository repository;
-    private static List<Patient> patients = new ArrayList<>();
 
-    public List<Patient> findAll(String name){
-        return repository.findWithFirstNameBeginningWith(name);
+    public List<Patient> findAll(String[] names, String[] cities){
+        return repository.findWithFirstNameOrCity(names, cities);
+    }
+
+    public List<Patient> fetchAll() {
+        return repository.findAll();
+    }
+
+    public List<Patient> findByName(String[] names) {
+        return repository.findByName(names);
+    }
+
+    public List<Patient> findByCity(String[] cities) {
+        return repository.findByCity(cities);
     }
 
     public Patient findOne(Integer id) throws PatientNotFoundException{
