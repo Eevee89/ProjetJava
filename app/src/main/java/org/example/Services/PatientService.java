@@ -19,9 +19,7 @@ public class PatientService {
     private static List<Patient> patients = new ArrayList<>();
 
     public List<Patient> findAll(String name){
-        return patients.stream()
-            .filter(p->p.getFirstName().startsWith(name))
-            .toList();
+        return repository.findWithFirstNameBeginningWith(name);
     }
 
     public Patient findOne(Integer id) throws PatientNotFoundException{
@@ -30,6 +28,6 @@ public class PatientService {
     }
 
     public void create(Patient p){
-        patients.add(p);
+        repository.save(p);
     }
 }

@@ -26,13 +26,14 @@ public class PatientRestController {
     private PatientService service;
 
     @GetMapping(path = "/patients")
-    public List<Patient> findAll(@RequestParam(name = "first_name", required = false)String filterByName){
-        return service.findAll(filterByName);
+    public List<Patient> findAll(@RequestParam(name = "firstName", required = false)String filterByName){
+        filterByName = filterByName == null ? "" : filterByName;
+        return service.findAll(filterByName );
     }
 
     
-    @GetMapping(path = "/patient/{id2}")
-    public Patient findAll(@PathVariable("id2") Integer id) throws PatientNotFoundException{
+    @GetMapping(path = "/patient/{id}")
+    public Patient findAll(@PathVariable("id") Integer id) throws PatientNotFoundException{
         return service.findOne(id);
     }
 
