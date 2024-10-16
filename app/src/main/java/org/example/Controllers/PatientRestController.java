@@ -29,8 +29,8 @@ public class PatientRestController {
     public List<Patient> findAll(@RequestParam(name = "firstName", required = false)String filterByName,
                                 @RequestParam(name = "city", required = false)String city){
 
-        String[] names = filterByName.split(",");
-        String[] cities = city.split(",");
+        String[] names = (filterByName == null ? "" : filterByName).split(",");
+        String[] cities = (city == null ? "" : city).split(",");
 
         if (cities[0] == "") {
             if (names[0] == "") {

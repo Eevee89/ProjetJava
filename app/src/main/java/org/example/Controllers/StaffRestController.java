@@ -32,8 +32,6 @@ public class StaffRestController {
                                 @RequestParam(name = "day", required = false)String day,
                                 @RequestParam(name = "morning", required = false)String morning) {
         
-        System.out.println(day);
-        System.out.println(morning);
         int[] centers = Arrays.stream(center.split(",")).mapToInt(Integer::parseInt).toArray();
         int workTimeId = WorkTimeService.getId(day, morning.contains("0"));
         return service.findAllFree(centers, workTimeId);

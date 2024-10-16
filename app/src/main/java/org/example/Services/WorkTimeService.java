@@ -1,7 +1,6 @@
 package org.example.Services;
 
 import org.example.Entities.WorkTime;
-import org.example.Exceptions.PatientNotFoundException;
 import org.example.Repositories.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

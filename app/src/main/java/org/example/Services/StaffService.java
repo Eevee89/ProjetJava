@@ -3,6 +3,7 @@ package org.example.Services;
 import java.util.List;
 
 import org.example.Entities.Staff;
+import org.example.Exceptions.StaffNotFoundException;
 import org.example.Repositories.StaffRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,5 +20,9 @@ public class StaffService {
         List<Staff> freeAt = repository.findByFreeAt(worktime);
         fromCenter.removeIf(elt -> freeAt.contains(elt));
         return fromCenter;
+    }
+
+    public Staff findOne(int id) throws StaffNotFoundException {
+        return repository.findById(id).orElseThrow(StaffNotFoundException::new);
     }
 }

@@ -26,7 +26,7 @@ INSERT INTO address (street, city, zip_code) VALUES ('8 Rue du marché', 'Dijon'
 
 -- Add some patients
 INSERT INTO patient (first_name, last_name, gender, birth_date, email, phone, address_id)
-VALUES ('John', 'Doe', false, '01/01/2000', 'john.doe@nomail.fake', '0123456789', 3);
+VALUES ('Yves', 'Remort', false, '01/01/2000', 'yves.remort@nomail.fake', '0123456789', 3);
 
 INSERT INTO patient (first_name, last_name, gender, birth_date, email, phone, address_id)
 VALUES ('Gaspard', 'Touze', false, '14/07/208', 'gaspard.touze69@hotmail.com', '0987654321', 4);
