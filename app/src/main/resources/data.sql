@@ -26,7 +26,7 @@ INSERT INTO address (street, city, zip_code) VALUES ('8 Rue du marché', 'Dijon'
 
 -- Add some patients
 INSERT INTO patient (first_name, last_name, gender, birth_date, email, phone, address_id)
-VALUES ('John', 'Doe', false, '01/01/2000', 'john.doe@nomail.fake', '0123456789', 3);
+VALUES ('Yves', 'Remort', false, '01/01/2000', 'yves.remort@nomail.fake', '0123456789', 3);
 
 INSERT INTO patient (first_name, last_name, gender, birth_date, email, phone, address_id)
 VALUES ('Gaspard', 'Touze', false, '14/07/208', 'gaspard.touze69@hotmail.com', '0987654321', 4);
@@ -100,3 +100,12 @@ INSERT INTO staff_work_times (staff_id, work_time_id) VALUES (5, 11);
 INSERT INTO staff_work_times (staff_id, work_time_id) VALUES (5, 12);
 INSERT INTO staff_work_times (staff_id, work_time_id) VALUES (5, 13);
 INSERT INTO staff_work_times (staff_id, work_time_id) VALUES (5, 14);
+
+-- Add centers-staff corres
+
+INSERT INTO staff_centers (center_id, staff_id) VALUES (1, 1);
+INSERT INTO staff_centers (center_id, staff_id) VALUES (2, 1);
+INSERT INTO staff_centers (center_id, staff_id) VALUES (1, 2); 
+INSERT INTO staff_centers (center_id, staff_id) VALUES (2, 3);
+INSERT INTO staff_centers (center_id, staff_id) VALUES (1, 4);
+INSERT INTO staff_centers (center_id, staff_id) VALUES (2, 5);    
