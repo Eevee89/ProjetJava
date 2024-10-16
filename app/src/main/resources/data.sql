@@ -100,3 +100,12 @@ INSERT INTO staff_work_times (staff_id, work_time_id) VALUES (5, 11);
 INSERT INTO staff_work_times (staff_id, work_time_id) VALUES (5, 12);
 INSERT INTO staff_work_times (staff_id, work_time_id) VALUES (5, 13);
 INSERT INTO staff_work_times (staff_id, work_time_id) VALUES (5, 14);
+
+-- Add centers-staff corres
+
+INSERT INTO staff_centers (center_id, staff_id) VALUES (1, 1);
+INSERT INTO staff_centers (center_id, staff_id) VALUES (2, 1);
+INSERT INTO staff_centers (center_id, staff_id) VALUES (1, 2); 
+INSERT INTO staff_centers (center_id, staff_id) VALUES (2, 3);
+INSERT INTO staff_centers (center_id, staff_id) VALUES (1, 4);
+INSERT INTO staff_centers (center_id, staff_id) VALUES (2, 5);    
