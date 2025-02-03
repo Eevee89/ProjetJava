@@ -25,7 +25,7 @@ public class PatientRestController {
     @Autowired
     private PatientService service;
 
-    @GetMapping(path = "/patients")
+    @GetMapping(path = "api/patients")
     public List<Patient> findAll(@RequestParam(name = "firstName", required = false)String filterByName,
                                 @RequestParam(name = "city", required = false)String city){
 
@@ -44,12 +44,12 @@ public class PatientRestController {
         return service.findAll(names, cities);
     }
     
-    @GetMapping(path = "/patient/{id}")
+    @GetMapping(path = "api/patient/{id}")
     public Patient findById(@PathVariable("id") Integer id) throws PatientNotFoundException{
         return service.findOne(id);
     }
 
-    @PostMapping(path = "/patients")
+    @PostMapping(path = "api/patients")
     public ResponseEntity<Patient> create(@RequestBody Patient p) throws URISyntaxException{
         service.create(p);
         return ResponseEntity.created(new URI("patient/"+p.getId())).build();
