@@ -27,12 +27,12 @@ public class AppointmentRestController {
     @Autowired
     private AppointmentService service;
 
-    @GetMapping("/appointment/{id}")
+    @GetMapping("api/appointment/{id}")
     public Appointment findOne(@PathVariable("id") Integer id) throws AppointmentNotFoundException {
         return service.findOne(id);
     }
 
-    @PostMapping("/appointments")
+    @PostMapping("api/appointments")
     public ResponseEntity<Appointment> create(@RequestBody Appointment a) throws URISyntaxException{
         if (service.isBusy(a.getCenterId().getId(), a.getDoctorId().getId(), a.getPatientId().getId(), a.gettime())) {
             return ResponseEntity.badRequest().build();

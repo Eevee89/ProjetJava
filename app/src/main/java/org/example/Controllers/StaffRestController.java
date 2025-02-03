@@ -27,7 +27,7 @@ public class StaffRestController {
     @Autowired
     private StaffService service;
 
-    @GetMapping("/doctors")
+    @GetMapping("api/doctors")
     public List<Staff> findAll(@RequestParam(name = "centers", required = false)String center,
                                 @RequestParam(name = "day", required = false)String day,
                                 @RequestParam(name = "morning", required = false)String morning) {
