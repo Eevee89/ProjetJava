@@ -11,6 +11,7 @@ import org.example.Exceptions.StaffNotFoundException;
 import org.example.Services.StaffService;
 import org.example.Services.WorkTimeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -31,20 +32,29 @@ public class StaffRestController {
 
     // Avoir la liste des médecins
     @GetMapping("/doctors")
-    public List<Staff> findAll(@RequestParam(name = "centers", required = false) String center,
-                               @RequestParam(name = "day", required = false) String day,
-                               @RequestParam(name = "morning", required = false) String morning) {
-        
-        // Vérifier si "center" est null ou vide
-        int[] centers = (center != null && !center.isEmpty()) 
-            ? Arrays.stream(center.split(",")).mapToInt(Integer::parseInt).toArray()
-            : new int[0]; // Tableau vide si aucun centre n'est fourni
-    
-        // Vérifier si "morning" est null avant d'appeler contains()
-        boolean isMorning = morning != null && morning.contains("0");
-    
-        int workTimeId = WorkTimeService.getId(day, isMorning);
-        return service.findAllFree(centers, workTimeId);
+    public ResponseEntity<?> findAll(
+        @RequestParam(name = "centers", required = false) String center,
+        @RequestParam(name = "day", required = false) String day,
+        @RequestParam(name = "morning", required = false) String morning,
+        @RequestParam(name = "staffPrivilege") int staffPrivilege) {
+
+    // Vérifier l'autorisation : Seuls le Super Admin (0) et les Administrateurs de centre (1) peuvent accéder
+    if (staffPrivilege != 0 && staffPrivilege != 1) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Accès refusé : Seul un Super Admin ou un Administrateur peut voir la liste des médecins !");
+    }
+
+    // Vérifier si "center" est null ou vide
+    int[] centers = (center != null && !center.isEmpty())
+        ? Arrays.stream(center.split(",")).mapToInt(Integer::parseInt).toArray()
+        : new int[0]; // Tableau vide si aucun centre n'est fourni
+
+    // Vérifier si "morning" est null avant d'appeler contains()
+    boolean isMorning = morning != null && morning.contains("0");
+
+    int workTimeId = WorkTimeService.getId(day, isMorning);
+    List<Staff> doctors = service.findAllFree(centers, workTimeId);
+
+    return ResponseEntity.ok(doctors);
     }
 
     // Ajouter un membre du staff (Super Admin ou Admin)
