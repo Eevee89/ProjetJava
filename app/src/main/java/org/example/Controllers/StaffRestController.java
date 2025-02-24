@@ -75,11 +75,11 @@ public class StaffRestController {
     @GetMapping("/doctors/center/{centerId}")
     public List<Staff> findDoctorsByCenter(@PathVariable int centerId) {
     return service.findDoctorsByCenter(centerId);
-}
+    }
 
     // Récupérer tous les administrateurs
     @GetMapping("/admins")
     public List<Staff> findAllAdmins() {
     return service.findAllAdmins();
-}
+    }
 }
