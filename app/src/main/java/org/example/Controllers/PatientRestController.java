@@ -59,17 +59,6 @@ public class PatientRestController {
         return ResponseEntity.created(new URI("patient/"+p.getId())).build();
     }
 
-    @GetMapping(path = "api/public/secureAPI")
-    public ResponseEntity securedApi(@RequestHeader HttpHeaders headers) {
-        if (headers.containsKey(HttpHeaders.AUTHORIZATION)) {
-        String authorizationHeader = headers.getFirst(HttpHeaders.AUTHORIZATION);
-        if (authorizationHeader.startsWith("Basic ")) {
-            return new ResponseEntity<>("Authentication passed", HttpStatus.OK);
-        }
-        }
-        return new ResponseEntity("Unauthorized", HttpStatus.UNAUTHORIZED);
-    }
-
     @ExceptionHandler
     public ResponseEntity<String> handle(PatientNotFoundException ex){
         return ResponseEntity.badRequest().body("Le patient n'existe pas\n");

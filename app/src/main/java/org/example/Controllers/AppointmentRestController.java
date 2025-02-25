@@ -32,6 +32,11 @@ public class AppointmentRestController {
         return service.findOne(id);
     }
 
+    @GetMapping("api/appointments")
+    public List<Appointment> findAll() throws AppointmentNotFoundException {
+        return service.findAll();
+    }
+
     @PostMapping("api/appointments")
     public ResponseEntity<Appointment> create(@RequestBody Appointment a) throws URISyntaxException{
         if (service.isBusy(a.getCenterId().getId(), a.getDoctorId().getId(), a.getPatientId().getId(), a.gettime())) {
