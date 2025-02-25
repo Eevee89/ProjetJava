@@ -44,10 +44,12 @@ public class Patient {
     @OneToMany(mappedBy = "patientId")
     private List<Appointment> appointments;
 
+    private String password;
+
 
     public Patient() {}
 
-    public Patient(Integer id, String firstName, String lastName, boolean gender, Address address, String phone, String email, Date birthDate) {
+    public Patient(Integer id, String firstName, String lastName, boolean gender, Address address, String phone, String email, Date birthDate, String password) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -56,6 +58,7 @@ public class Patient {
         this.phone = phone;
         this.email = email;
         this.birthDate = birthDate;
+        this.password = password;
     }
 
     // Getters and Setters
@@ -121,5 +124,9 @@ public class Patient {
 
     public void setBirthDate(Date birthDate) {
         this.birthDate = birthDate;  
+    }
+
+    public String getPassword() {
+        return password;
     }
 }
