@@ -53,10 +53,10 @@ public class PatientRestController {
         return service.findOne(id);
     }
 
-    @PostMapping(path = "api/patients")
+    @PostMapping(path = "api/patients/create")
     public ResponseEntity<Patient> create(@RequestBody Patient p) throws URISyntaxException{
         service.create(p);
-        return ResponseEntity.created(new URI("patient/"+p.getId())).build();
+        return ResponseEntity.created(new URI("api/patient/"+p.getId())).build();
     }
 
     @ExceptionHandler
