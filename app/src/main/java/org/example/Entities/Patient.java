@@ -91,7 +91,7 @@ public class Patient {
     }
 
     public void setGender(boolean gender) {
-        this.gender = gender;  
+        this.gender = gender;
     }
 
     public Address getAddress() {
@@ -123,6 +123,6 @@ public class Patient {
     }
 
     public void setBirthDate(Date birthDate) {
-        this.birthDate = birthDate;  
+        this.birthDate = birthDate;
     }
 }

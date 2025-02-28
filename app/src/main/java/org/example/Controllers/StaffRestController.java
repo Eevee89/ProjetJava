@@ -58,7 +58,7 @@ public class StaffRestController {
     }
 
     // Ajouter un membre du staff (Super Admin ou Admin)
-    @PostMapping
+    @PostMapping("/staff")
     public ResponseEntity<Staff> createStaff(@RequestBody Staff staff) {
         Staff newStaff = service.saveStaff(staff);
         return ResponseEntity.ok(newStaff);
