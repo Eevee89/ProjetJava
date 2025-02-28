@@ -28,6 +28,12 @@ public class Staff {
     @Column(nullable = false)
     private String phone;
 
+    @Column(nullable = false)
+    private String email;
+
+    @Column(nullable = false)
+    private String password;
+
     @ManyToMany
     @JoinTable(name = "staff_centers",
                joinColumns = @JoinColumn(name = "staff_id"),
@@ -91,5 +97,21 @@ public class Staff {
 
     public void setPrivilege(int privilege) {
         this.privilege = privilege;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+    
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

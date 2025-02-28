@@ -27,4 +27,9 @@ public interface StaffRepository extends JpaRepository<Staff, Integer> {
 
     // Trouver tous les administrateurs
     List<Staff> findByPrivilege(int privilege);
+
+    // Trouve le staff à partir d'un mail
+    Staff findByEmail(String email);
+
+    
 }

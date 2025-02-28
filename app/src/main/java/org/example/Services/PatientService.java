@@ -41,4 +41,19 @@ public class PatientService {
     public void create(Patient p){
         repository.save(p);
     }
+
+    public void addVaccine(int patientId, String vaccine) {
+        Patient patient = repository.findById(patientId).orElse(null);
+        if (patient == null) {
+            throw new RuntimeException("Patient non trouvé");
+        }
+
+        List<String> vaccines = patient.getVaccines();
+        if (vaccines == null) {
+            vaccines = new ArrayList<>();
+        }
+        vaccines.add(vaccine);
+
+        repository.updateVaccinesById(patientId, vaccines);
+    }
 }

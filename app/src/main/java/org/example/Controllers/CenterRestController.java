@@ -8,8 +8,10 @@ import java.util.Arrays;
 import com.google.gson.Gson;
 
 import org.example.Entities.Center;
+import org.example.Entities.Staff;
 import org.example.Entities.AuthHeader;
 import org.example.Services.CenterService;
+import org.example.Services.StaffService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jackson.JsonObjectDeserializer;
 import org.springframework.http.ResponseEntity;
@@ -24,13 +26,17 @@ public class CenterRestController {
 
     @Autowired
     private CenterService centerService;
-  
-    @GetMapping("api/centers")
+
+    @Autowired
+    private StaffService staffService;
+
+    // Lister tous les centres
+    @GetMapping
     public List<Center> findAll() {
-        return service.findAll();
+        return centerService.findAll();
     }
 
-    @GetMapping("api/centers/cities")
+    @GetMapping("/cities")
     public List<String> findAllCities(@RequestHeader("Custom-Auth") String userDatas) {
         Gson gson = new Gson();
         AuthHeader datas = gson.fromJson(userDatas, AuthHeader.class);
@@ -40,41 +46,61 @@ public class CenterRestController {
         System.out.println(datas.password);
         System.out.println("\n\n ----- \n\n");
         
-        return service.getAllCities();
+        return centerService.getAllCities();
     }
 
     // Créer un centre
     @PostMapping
     public ResponseEntity<?> createCenter(
         @RequestBody Center center,
-        @RequestHeader("staffPrivilege") int staffPrivilege // Récupérer le privilège depuis les headers
+        @RequestHeader("Custom-Auth") String userDatas
     ) {
-    // Vérifier si l'utilisateur est Super Admin
-    if (staffPrivilege != 0) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Accès refusé : Seul un Super Admin a l'autorisation");
-    }
-    Center newCenter = centerService.saveCenter(center);
-    return ResponseEntity.ok(newCenter);
+        Gson gson = new Gson();
+        AuthHeader datas = gson.fromJson(userDatas, AuthHeader.class);
+        boolean isCorrect = staffService.auth(datas.email, datas.password);
+        if (!isCorrect) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Authentification échouée");
+        }
+
+        // Récupérer le staff associé à l'email
+        Staff staff = staffService.findByEmail(datas.email);
+        if (staff == null) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Utilisateur non trouvé");
+        }
+
+        // Vérifier si l'utilisateur est Super Admin (privilège 0)
+        if (staff.getPrivilege() != 0) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Accès refusé : Seul un Super Admin a l'autorisation");
+        }
+
+        Center newCenter = centerService.saveCenter(center);
+        return ResponseEntity.ok(newCenter);
     }
 
-
-
-    // Lister tous les centres
-    @GetMapping
-    public List<Center> getAllCenters() {
-        return centerService.getAllCenters();
-    }
 
     // Modifier un centre (seulement pour le Super Admin)
     @PutMapping("/{id}")
     public ResponseEntity<?> updateCenter(
             @PathVariable int id,
             @RequestBody Center updatedCenter,
-            @RequestHeader("staffPrivilege") int staffPrivilege // Privilège de l'utilisateur
+            @RequestHeader("Custom-Auth") String userDatas
     ) {
-        // Vérifier si l'utilisateur est Super Admin
-        if (staffPrivilege != 0) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Accès refusé : Seul un Super Admin peut modifier un centre.");
+        Gson gson = new Gson();
+        AuthHeader datas = gson.fromJson(userDatas, AuthHeader.class);
+        boolean isCorrect = staffService.auth(datas.email, datas.password);
+        if (!isCorrect) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Authentification échouée");
+        }
+
+        // Récupérer le staff associé à l'email
+        Staff staff = staffService.findByEmail(datas.email);
+        if (staff == null) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Utilisateur non trouvé");
+        }
+
+        // Vérifier si l'utilisateur est Super Admin (privilège 0)
+        if (staff.getPrivilege() != 0) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Accès refusé : Seul un Super Admin a l'autorisation");
         }
 
         Center center = centerService.updateCenter(id, updatedCenter);
@@ -85,11 +111,24 @@ public class CenterRestController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteCenter(
             @PathVariable int id,
-            @RequestHeader("staffPrivilege") int staffPrivilege // Privilège de l'utilisateur
-    ) {
-        // Vérifier si l'utilisateur est Super Admin
-        if (staffPrivilege != 0) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Accès refusé : Seul un Super Admin peut supprimer un centre.");
+            @RequestHeader("Custom-Auth") String userDatas
+    ) { 
+        Gson gson = new Gson();
+        AuthHeader datas = gson.fromJson(userDatas, AuthHeader.class);
+        boolean isCorrect = staffService.auth(datas.email, datas.password);
+        if (!isCorrect) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Authentification échouée");
+        }
+
+        // Récupérer le staff associé à l'email
+        Staff staff = staffService.findByEmail(datas.email);
+        if (staff == null) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Utilisateur non trouvé");
+        }
+
+        // Vérifier si l'utilisateur est Super Admin (privilège 0)
+        if (staff.getPrivilege() != 0) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Accès refusé : Seul un Super Admin a l'autorisation");
         }
 
         centerService.deleteCenter(id);

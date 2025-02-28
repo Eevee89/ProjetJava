@@ -1,5 +1,6 @@
 package org.example.Entities;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -36,7 +37,11 @@ public class Patient {
     @Column(nullable = false)
     private String phone;
 
+    @Column(nullable = false)
     private String email;
+
+    @Column(nullable = false)
+    private List<String> vaccines;
 
     @OneToOne
     @JoinColumn(name = "address_id", nullable = false)
@@ -131,5 +136,9 @@ public class Patient {
 
     public String getPassword() {
         return password;
+    }
+
+    public List<String> getVaccines() {
+        return vaccines;
     }
 }

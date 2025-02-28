@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import org.example.Entities.AuthHeader;
 import org.example.Entities.Staff;
 import org.example.Exceptions.StaffNotFoundException;
 import org.example.Services.StaffService;
@@ -20,9 +21,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriBuilder;
+import com.google.gson.Gson;
 
 @RestController
 public class StaffRestController {
@@ -35,13 +38,8 @@ public class StaffRestController {
     public ResponseEntity<?> findAll(
         @RequestParam(name = "centers", required = false) String center,
         @RequestParam(name = "day", required = false) String day,
-        @RequestParam(name = "morning", required = false) String morning,
-        @RequestParam(name = "staffPrivilege") int staffPrivilege) {
-
-    // Vérifier l'autorisation : Seuls le Super Admin (0) et les Administrateurs de centre (1) peuvent accéder
-    if (staffPrivilege != 0 && staffPrivilege != 1) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Accès refusé : Seul un Super Admin ou un Administrateur peut voir la liste des médecins !");
-    }
+        @RequestParam(name = "morning", required = false) String morning
+    ){
 
     // Vérifier si "center" est null ou vide
     int[] centers = (center != null && !center.isEmpty())
@@ -59,24 +57,85 @@ public class StaffRestController {
 
     // Ajouter un membre du staff (Super Admin ou Admin)
     @PostMapping("/staff")
-    public ResponseEntity<Staff> createStaff(@RequestBody Staff staff) {
+    public ResponseEntity<String> createStaff(
+        @RequestBody Staff staff,
+        @RequestHeader("Custom-Auth") String userDatas) {
+            Gson gson = new Gson();
+            AuthHeader datas = gson.fromJson(userDatas, AuthHeader.class);
+            boolean isCorrect = service.auth(datas.email, datas.password);
+            if (!isCorrect) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Authentification échouée");
+            }
+    
+            // Récupérer le staff associé à l'email
+            Staff adminStaff = service.findByEmail(datas.email);
+            if (adminStaff == null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Utilisateur non trouvé");
+            }
+    
+            if (staff.getPrivilege() != 0 && staff.getPrivilege() != 1) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Accès refusé : Seul un Super Admin ou un Administrateur a l'autorisation");
+            }
+        
+        
         Staff newStaff = service.saveStaff(staff);
-        return ResponseEntity.ok(newStaff);
+        return ResponseEntity.ok("Nouveau Staff crée");
     }
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<Staff> updateStaff(@PathVariable int id, @RequestBody Staff staff) {
+    public ResponseEntity<String> updateStaff(
+        @PathVariable int id,
+        @RequestBody Staff newStaff,
+        @RequestHeader("Custom-Auth") String userDatas) {
+
+            Gson gson = new Gson();
+            AuthHeader datas = gson.fromJson(userDatas, AuthHeader.class);
+            boolean isCorrect = service.auth(datas.email, datas.password);
+            if (!isCorrect) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Authentification échouée");
+            }
+    
+            // Récupérer le staff associé à l'email
+            Staff staff = service.findByEmail(datas.email);
+            if (staff == null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Utilisateur non trouvé");
+            }
+    
+            if (staff.getPrivilege() != 0 && staff.getPrivilege() != 1) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Accès refusé : Seul un Super Admin ou un Administrateur a l'autorisation");
+            }
+
         try {
-            Staff updatedStaff = service.updateStaff(id, staff);
-            return ResponseEntity.ok(updatedStaff);
+            Staff updatedStaff = service.updateStaff(id, newStaff);
+            return ResponseEntity.ok("Mise à jour réussie !");
         } catch (StaffNotFoundException e) {
             return ResponseEntity.notFound().build(); // Retourne 404 si le staff n'existe pas
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteStaff(@PathVariable int id) {
+    public ResponseEntity<String> deleteStaff(
+        @PathVariable int id,
+        @RequestHeader("Custom-Auth") String userDatas) {
+
+            Gson gson = new Gson();
+            AuthHeader datas = gson.fromJson(userDatas, AuthHeader.class);
+            boolean isCorrect = service.auth(datas.email, datas.password);
+            if (!isCorrect) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Authentification échouée");
+            }
+    
+            // Récupérer le staff associé à l'email
+            Staff staff = service.findByEmail(datas.email);
+            if (staff == null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Utilisateur non trouvé");
+            }
+    
+            if (staff.getPrivilege() != 0) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Accès refusé : Seul un Super Admin");
+            }
+
         service.deleteStaff(id);
         return ResponseEntity.noContent().build();
     }
