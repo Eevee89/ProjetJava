@@ -1,6 +1,7 @@
 package org.example.Repositories;
 
 import java.util.List;
+import java.util.Date;
 
 import org.example.Entities.Appointment;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,4 +14,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Intege
     
     @Query("SELECT a FROM Appointment a WHERE a.centerId.id = :center AND a.doctorId.id = :doctor AND a.patientId.id = :patient")
     public List<Appointment> findByCenterDoctorAndPatient(@Param("center") int center, @Param("doctor") int doctor, @Param("patient") int patient);
+
+    @Query("SELECT a FROM Appointment a WHERE a.centerId.id = :center AND a.time = :date")
+    public List<Appointment> findByCenterDoctorAndDate(@Param("center") int center, @Param("date") Date date);
 }

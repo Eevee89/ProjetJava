@@ -33,8 +33,8 @@ VALUES ('Gaspard', 'Touze', false, '14/07/2008', 'gaspard.touze69@hotmail.com', 
 
 -- Add some centers
 
-INSERT INTO center (phone, address_id) VALUES ('0912121212', 1);
-INSERT INTO center (phone, address_id) VALUES ('0915151515', 2);
+INSERT INTO center (phone, address_id, name) VALUES ('0912121212', 1, 'Maison de santé');
+INSERT INTO center (phone, address_id, name) VALUES ('0915151515', 2, 'Hôpital CHU');
 
 -- Add some staff
 

@@ -4,6 +4,7 @@ import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -28,7 +29,7 @@ public class Staff {
     @Column(nullable = false)
     private String phone;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "staff_centers",
                joinColumns = @JoinColumn(name = "staff_id"),
                inverseJoinColumns = @JoinColumn(name = "center_id"))
@@ -36,7 +37,7 @@ public class Staff {
 
     private int privilege;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "staff_work_times",
                joinColumns = @JoinColumn(name = "staff_id"),
                inverseJoinColumns = @JoinColumn(name = "work_time_id"))

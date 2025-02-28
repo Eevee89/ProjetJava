@@ -23,7 +23,12 @@ public class CenterRestController {
     private AuthService authService;
 
     @GetMapping("api/centers")
-    public List<Center> findAll() {
+    public List<Center> findAll(@RequestHeader("Custom-Auth") String userDatas) throws UnauthentifiedException {
+        boolean isAuth = authService.authentify(userDatas);
+        if (!isAuth) {
+            throw new UnauthentifiedException();
+        }
+        
         return service.findAll();
     }
 

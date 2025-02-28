@@ -35,4 +35,10 @@ public class AuthService {
         AuthHeader datas = gson.fromJson(jsonString, AuthHeader.class);
         return repository.findNameByEmail(datas.email);
     }
+
+    public Integer findIdByEmail(String jsonString) {
+        Gson gson = new Gson();
+        AuthHeader datas = gson.fromJson(jsonString, AuthHeader.class);
+        return repository.findIdByEmail(datas.email);
+    }
 }
