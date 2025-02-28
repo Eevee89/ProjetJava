@@ -7,6 +7,8 @@ import org.example.Exceptions.StaffNotFoundException;
 import org.example.Repositories.StaffRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.util.Optional;
+
 
 @Service
 public class StaffService {
@@ -14,6 +16,7 @@ public class StaffService {
     @Autowired
     private StaffRepository repository;
 
+    // Trouver tous les médecins disponibles selon les centres et le créneau de travail
     public List<Staff> findAllFree(int[] centers, int worktime) {
         System.out.println(worktime);
         List<Staff> fromCenter = repository.findByCenter(centers);
@@ -22,7 +25,44 @@ public class StaffService {
         return fromCenter;
     }
 
+    // Trouver un médecin selon son id
     public Staff findOne(int id) throws StaffNotFoundException {
-        return repository.findById(id).orElseThrow(StaffNotFoundException::new);
+        return repository.findById(id)
+            .orElseThrow(() -> new StaffNotFoundException("Staff not found with ID: " + id));
+    } 
+
+    // Ajouter un membre du staff
+    public Staff saveStaff(Staff staff) {
+        return repository.save(staff);
     }
+
+    public Staff updateStaff(int id, Staff newStaffData) throws StaffNotFoundException {
+        Staff staff = repository.findById(id)
+            .orElseThrow(() -> new StaffNotFoundException("Staff not found with ID: " + id));
+    
+        staff.setFirstName(newStaffData.getFirstName());
+        staff.setLastName(newStaffData.getLastName());
+        staff.setPhone(newStaffData.getPhone());
+        staff.setPrivilege(newStaffData.getPrivilege());
+    
+        return repository.save(staff);
+    }
+
+    // Supprimer un membre du staff
+    public void deleteStaff(int id) {
+        if (repository.existsById(id)) {
+            repository.deleteById(id); // Suppression via JPA
+        } else {
+            throw new RuntimeException("Impossible de supprimer : Staff introuvable avec l'ID : " + id);
+        }
+    }
+    public List<Staff> findDoctorsByCenter(int centerId) {
+        return repository.findByPrivilegeAndCenters_Id(2, centerId);
+    }
+    
+    public List<Staff> findAllAdmins() {
+        return repository.findByPrivilege(1);
+    }
+    
 }
+
