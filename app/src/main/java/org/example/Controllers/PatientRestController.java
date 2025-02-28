@@ -8,6 +8,9 @@ import org.example.Entities.Patient;
 import org.example.Exceptions.PatientNotFoundException;
 import org.example.Services.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriBuilder;
@@ -25,7 +29,7 @@ public class PatientRestController {
     @Autowired
     private PatientService service;
 
-    @GetMapping(path = "/patients")
+    @GetMapping(path = "api/patients")
     public List<Patient> findAll(@RequestParam(name = "firstName", required = false)String filterByName,
                                 @RequestParam(name = "city", required = false)String city){
 
@@ -44,17 +48,16 @@ public class PatientRestController {
         return service.findAll(names, cities);
     }
     
-    @GetMapping(path = "/patient/{id}")
+    @GetMapping(path = "api/patient/{id}")
     public Patient findById(@PathVariable("id") Integer id) throws PatientNotFoundException{
         return service.findOne(id);
     }
 
-    @PostMapping(path = "/patients")
+    @PostMapping(path = "api/patients")
     public ResponseEntity<Patient> create(@RequestBody Patient p) throws URISyntaxException{
         service.create(p);
         return ResponseEntity.created(new URI("patient/"+p.getId())).build();
     }
-
 
     @ExceptionHandler
     public ResponseEntity<String> handle(PatientNotFoundException ex){

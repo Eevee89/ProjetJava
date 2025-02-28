@@ -1,8 +1,11 @@
 package org.example.Services;
 
+import java.util.List;
 import java.util.Optional;
+
 import org.example.Entities.Center;
 import org.example.Repositories.CenterRepository;
+import org.example.Repositories.AddressRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +16,9 @@ public class CenterService {
 
     @Autowired
     private CenterRepository centerRepository;
+
+    @Autowired
+    private AddressRepository addressRepository;
 
     public Center saveCenter(Center center) {
         return centerRepository.save(center);
@@ -40,5 +46,8 @@ public class CenterService {
     public Optional<Center> getCenterById(int id) {
     return centerRepository.findById(id);
     }
-    
+  
+    public List<String> getAllCities() {
+        return addressRepository.findAllCentersCities();
+    }
 }
