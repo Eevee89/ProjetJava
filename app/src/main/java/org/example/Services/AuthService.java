@@ -17,29 +17,37 @@ public class AuthService {
     private StaffRepository staffRepository;
 
     public boolean authentify(String jsonString) {
+        if (jsonString == null || jsonString.isEmpty()) {
+            return false;
+        }
+    
         Gson gson = new Gson();
-        AuthHeader datas = gson.fromJson(jsonString, AuthHeader.class);
-
-        int count = 0;
-        if (datas.role == "USER") {
-            count = patientRepository.countByEmail(datas.email);
-        }
-        
-        if (count == 0) {
+        try {
+            AuthHeader datas = gson.fromJson(jsonString, AuthHeader.class);
+    
+            int count = 0;
+            if (datas.role.equals("USER")) {
+                count = patientRepository.countByEmail(datas.email);
+            }
+    
+            if (count == 0) {
+                return false;
+            }
+    
+            String password = "";
+    
+            if (datas.role.equals("USER")) {
+                password = patientRepository.findPasswordWithEmail(datas.email);
+            }
+    
+            if (!password.equals(datas.password)) {
+                return false;
+            }
+    
+            return true;
+        } catch (com.google.gson.JsonSyntaxException e) {
             return false;
         }
-
-        String password = "";
-
-        if (datas.role == "USER") {
-            password = patientRepository.findPasswordWithEmail(datas.email);
-        }
-
-        if (!password.equals(datas.password)) {
-            return false;
-        }
-
-        return true;
     }
 
     public String findNameByEmail(String jsonString) {
