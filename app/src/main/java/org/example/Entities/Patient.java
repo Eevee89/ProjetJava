@@ -3,6 +3,9 @@ package org.example.Entities;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -61,7 +64,7 @@ public class Patient {
         this.birthDate = birthDate;
         this.password = password;
     }
-
+    
     // Getters and Setters
     public Integer getId() {
         return id;
@@ -92,7 +95,7 @@ public class Patient {
     }
 
     public void setGender(boolean gender) {
-        this.gender = gender;  
+        this.gender = gender;
     }
 
     public Address getAddress() {
@@ -124,7 +127,7 @@ public class Patient {
     }
 
     public void setBirthDate(Date birthDate) {
-        this.birthDate = birthDate;  
+        this.birthDate = birthDate;
     }
 
     public String getPassword() {
