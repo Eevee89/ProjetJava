@@ -19,8 +19,6 @@ public class AddressRestController {
     @PostMapping(path = "api/address/create")
     public ResponseEntity<String> create(@RequestBody Address a) throws URISyntaxException{
         service.create(a);
-        ResponseEntity<String> resp = ResponseEntity.created(new URI("api/address/"+a.getId())).body(String.format("{\"id\":%s}", a.getId()));
-        System.out.println(resp);
-        return resp;
+        return ResponseEntity.created(new URI("api/address/"+a.getId())).body(String.format("{\"id\":%s}", a.getId()));
     }
 }

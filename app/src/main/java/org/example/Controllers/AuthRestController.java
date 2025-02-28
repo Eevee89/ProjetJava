@@ -24,6 +24,8 @@ public class AuthRestController {
         if (!isAuth) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        return ResponseEntity.status(HttpStatus.OK).build();
+
+        String name = service.findNameByEmail(userDatas);
+        return ResponseEntity.ok(String.format("{\"name\":\"%s\"}", name));
     }
 }

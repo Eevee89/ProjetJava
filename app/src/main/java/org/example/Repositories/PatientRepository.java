@@ -17,7 +17,10 @@ public interface PatientRepository extends JpaRepository<Patient, Integer> {
     List<Patient> findByName(@Param("names") String[] names);
 
     @Query("SELECT count(p) FROM Patient p WHERE p.email = :email")
-    int findByEmail(@Param("email") String email);
+    int countByEmail(@Param("email") String email);
+
+    @Query("SELECT p.firstName FROM Patient p WHERE p.email = :email")
+    String findNameByEmail(@Param("email") String email);
 
     @Query("SELECT p FROM Patient p WHERE p.address.city IN (:cities)")
     List<Patient> findByCity(@Param("cities") String[] cities);
