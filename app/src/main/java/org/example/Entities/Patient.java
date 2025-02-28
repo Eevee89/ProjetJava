@@ -47,6 +47,7 @@ public class Patient {
     @OneToMany(mappedBy = "patientId")
     private List<Appointment> appointments;
 
+    @Column(nullable = false)
     private String password;
 
 

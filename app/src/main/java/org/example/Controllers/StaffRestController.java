@@ -1,9 +1,6 @@
 package org.example.Controllers;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.example.Entities.Staff;
@@ -22,7 +19,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.util.UriBuilder;
 
 @RestController
 public class StaffRestController {

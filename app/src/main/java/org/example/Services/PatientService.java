@@ -1,8 +1,5 @@
 package org.example.Services;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import org.example.Entities.Patient;
