@@ -32,17 +32,6 @@ public class CenterRestController {
         return service.findAll();
     }
 
-    @GetMapping("api/centers/cities")
-    public List<String> findAllCities(@RequestHeader("Custom-Auth") String userDatas) throws UnauthentifiedException {
-
-        boolean isAuth = authService.authentify(userDatas);
-        if (!isAuth) {
-            throw new UnauthentifiedException();
-        }
-
-        return service.getAllCities();
-    }
-
     @ExceptionHandler
     public ResponseEntity<String> handle(UnauthentifiedException ex){
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

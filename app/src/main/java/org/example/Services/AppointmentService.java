@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.example.Entities.Appointment;
-import org.example.Entities.WorkTime;
 import org.example.Entities.Staff;
 import org.example.Exceptions.AppointmentNotFoundException;
 import org.example.Repositories.AppointmentRepository;

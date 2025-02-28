@@ -1,7 +1,5 @@
 package org.example.Repositories;
 
-import java.util.List;
-
 import org.example.Entities.WorkTime;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

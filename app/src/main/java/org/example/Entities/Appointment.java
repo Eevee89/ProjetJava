@@ -32,8 +32,6 @@ public class Appointment {
     @Column(nullable = false)
     private Date time;
 
-    private String dateString;
-
     public Appointment(int id, Center centerId, Patient patientId, Staff doctorId, Date time) {
         this.id = id;
         this.centerId = centerId;
