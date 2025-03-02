@@ -2,8 +2,12 @@ package org.example.Controllers;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+<<<<<<< HEAD
 import java.util.List;
 
+=======
+import org.example.Exceptions.UnauthentifiedException;
+>>>>>>> 58b39e1 (Implementation of privilege checks and addition of 2 unit tests)
 import org.example.Entities.Patient;
 import org.example.Exceptions.PatientNotFoundException;
 import org.example.Services.PatientService;

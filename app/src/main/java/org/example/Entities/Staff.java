@@ -34,7 +34,11 @@ public class Staff {
     @Column(nullable = false)
     private String password;
 
+<<<<<<< HEAD
     @ManyToMany
+=======
+    @ManyToMany(fetch = FetchType.LAZY)
+>>>>>>> 58b39e1 (Implementation of privilege checks and addition of 2 unit tests)
     @JoinTable(name = "staff_centers",
                joinColumns = @JoinColumn(name = "staff_id"),
                inverseJoinColumns = @JoinColumn(name = "center_id"))
@@ -99,6 +103,7 @@ public class Staff {
         this.privilege = privilege;
     }
 
+<<<<<<< HEAD
     public String getEmail() {
         return email;
     }
@@ -112,6 +117,21 @@ public class Staff {
     }
     
     public void setPassword(String password) {
+=======
+    public String getEmail(){
+        return email;
+    }
+
+    public void setEmail(String email){
+        this.email = email;
+    }
+
+    public String getPassword(){
+        return email;
+    }
+    
+    public void setPassword(String password){
+>>>>>>> 58b39e1 (Implementation of privilege checks and addition of 2 unit tests)
         this.password = password;
     }
 }
