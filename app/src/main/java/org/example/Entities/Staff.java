@@ -4,13 +4,13 @@ import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
 
 @Entity
 public class Staff {
@@ -34,11 +34,8 @@ public class Staff {
     @Column(nullable = false)
     private String password;
 
-<<<<<<< HEAD
-    @ManyToMany
-=======
+
     @ManyToMany(fetch = FetchType.LAZY)
->>>>>>> 58b39e1 (Implementation of privilege checks and addition of 2 unit tests)
     @JoinTable(name = "staff_centers",
                joinColumns = @JoinColumn(name = "staff_id"),
                inverseJoinColumns = @JoinColumn(name = "center_id"))
@@ -46,7 +43,7 @@ public class Staff {
 
     private int privilege;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "staff_work_times",
                joinColumns = @JoinColumn(name = "staff_id"),
                inverseJoinColumns = @JoinColumn(name = "work_time_id"))
@@ -103,21 +100,6 @@ public class Staff {
         this.privilege = privilege;
     }
 
-<<<<<<< HEAD
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-    
-    public void setPassword(String password) {
-=======
     public String getEmail(){
         return email;
     }
@@ -131,7 +113,6 @@ public class Staff {
     }
     
     public void setPassword(String password){
->>>>>>> 58b39e1 (Implementation of privilege checks and addition of 2 unit tests)
         this.password = password;
     }
 }

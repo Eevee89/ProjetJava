@@ -21,6 +21,9 @@ public class Center {
     @Column(nullable = false)
     private String phone;
 
+    @Column
+    private String name;
+
     @ManyToMany(mappedBy = "centers")
     private List<Staff> staff;
 
@@ -28,10 +31,11 @@ public class Center {
     @JoinColumn(name = "address_id", nullable = false)
     private Address address;
 
-    public Center(Integer id, String phone, Address address) {
+    public Center(Integer id, String phone, Address address, String name) {
         this.id = id;
         this.phone = phone;
         this.address = address;
+        this.name = name;
     }
 
     public Center() {
@@ -59,5 +63,9 @@ public class Center {
 
     public void setAddress(Address address) {
         this.address = address;
+    }
+
+    public String getName() {
+        return name;
     }
 }

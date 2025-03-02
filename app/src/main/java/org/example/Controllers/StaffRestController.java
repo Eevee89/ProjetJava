@@ -1,16 +1,10 @@
 package org.example.Controllers;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Arrays;
 
-<<<<<<< HEAD
 import org.example.Entities.AuthHeader;
-=======
 import org.example.Services.AuthService;
->>>>>>> 58b39e1 (Implementation of privilege checks and addition of 2 unit tests)
 import org.example.Entities.Staff;
 import org.example.Exceptions.StaffNotFoundException;
 import org.example.Services.StaffService;
@@ -28,13 +22,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-<<<<<<< HEAD
 import org.springframework.web.util.UriBuilder;
 import com.google.gson.Gson;
-=======
 import org.example.Exceptions.UnauthentifiedException;
 import org.example.Exceptions.UnauthorizedException;
->>>>>>> 58b39e1 (Implementation of privilege checks and addition of 2 unit tests)
+
 
 @RestController
 public class StaffRestController {
@@ -50,10 +42,6 @@ public class StaffRestController {
     public ResponseEntity<?> findAll(
         @RequestParam(name = "centers", required = false) String center,
         @RequestParam(name = "day", required = false) String day,
-<<<<<<< HEAD
-        @RequestParam(name = "morning", required = false) String morning
-    ){
-=======
         @RequestParam(name = "morning", required = false) String morning,
         @RequestHeader("Custom-Auth") String userDatas) throws UnauthentifiedException {
 
@@ -61,7 +49,6 @@ public class StaffRestController {
         if (!isAuth) {
             throw new UnauthentifiedException();
         }
->>>>>>> 58b39e1 (Implementation of privilege checks and addition of 2 unit tests)
 
     // Vérifier si "center" est null ou vide
     int[] centers = (center != null && !center.isEmpty())
@@ -79,29 +66,6 @@ public class StaffRestController {
 
     // Ajouter un membre du staff (Super Admin ou Admin)
     @PostMapping("/staff")
-<<<<<<< HEAD
-    public ResponseEntity<String> createStaff(
-        @RequestBody Staff staff,
-        @RequestHeader("Custom-Auth") String userDatas) {
-            Gson gson = new Gson();
-            AuthHeader datas = gson.fromJson(userDatas, AuthHeader.class);
-            boolean isCorrect = service.auth(datas.email, datas.password);
-            if (!isCorrect) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Authentification échouée");
-            }
-    
-            // Récupérer le staff associé à l'email
-            Staff adminStaff = service.findByEmail(datas.email);
-            if (adminStaff == null) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Utilisateur non trouvé");
-            }
-    
-            if (staff.getPrivilege() != 0 && staff.getPrivilege() != 1) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Accès refusé : Seul un Super Admin ou un Administrateur a l'autorisation");
-            }
-        
-        
-=======
     public ResponseEntity<Staff> createStaff(
         @RequestBody Staff staff,
         @RequestHeader("Custom-Auth") String userDatas) throws UnauthentifiedException {
@@ -117,37 +81,12 @@ public class StaffRestController {
             throw new UnauthorizedException("L'utilisateur doit être Super Admin ou admin pour utiliser cette fonctionnalité");
         }
 
->>>>>>> 58b39e1 (Implementation of privilege checks and addition of 2 unit tests)
         Staff newStaff = service.saveStaff(staff);
         return ResponseEntity.ok("Nouveau Staff crée");
     }
 
     // Modifier les informations d'un Staff (Admin ou SuperAdmin)
     @PutMapping("/{id}")
-<<<<<<< HEAD
-    public ResponseEntity<String> updateStaff(
-        @PathVariable int id,
-        @RequestBody Staff newStaff,
-        @RequestHeader("Custom-Auth") String userDatas) {
-
-            Gson gson = new Gson();
-            AuthHeader datas = gson.fromJson(userDatas, AuthHeader.class);
-            boolean isCorrect = service.auth(datas.email, datas.password);
-            if (!isCorrect) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Authentification échouée");
-            }
-    
-            // Récupérer le staff associé à l'email
-            Staff staff = service.findByEmail(datas.email);
-            if (staff == null) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Utilisateur non trouvé");
-            }
-    
-            if (staff.getPrivilege() != 0 && staff.getPrivilege() != 1) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Accès refusé : Seul un Super Admin ou un Administrateur a l'autorisation");
-            }
-
-=======
     public ResponseEntity<Staff> updateStaff(
         @PathVariable int id,
         @RequestBody Staff staff,
@@ -163,8 +102,6 @@ public class StaffRestController {
         if (!isSuperAdmin && !isAdmin) {
             throw new UnauthorizedException("L'utilisateur doit être Super Admin ou admin pour utiliser cette fonctionnalité");
         }
-        
->>>>>>> 58b39e1 (Implementation of privilege checks and addition of 2 unit tests)
         try {
             Staff updatedStaff = service.updateStaff(id, newStaff);
             return ResponseEntity.ok("Mise à jour réussie !");
@@ -175,28 +112,6 @@ public class StaffRestController {
 
     // Supprimer un Staff (SuperAdmin)
     @DeleteMapping("/{id}")
-<<<<<<< HEAD
-    public ResponseEntity<String> deleteStaff(
-        @PathVariable int id,
-        @RequestHeader("Custom-Auth") String userDatas) {
-
-            Gson gson = new Gson();
-            AuthHeader datas = gson.fromJson(userDatas, AuthHeader.class);
-            boolean isCorrect = service.auth(datas.email, datas.password);
-            if (!isCorrect) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Authentification échouée");
-            }
-    
-            // Récupérer le staff associé à l'email
-            Staff staff = service.findByEmail(datas.email);
-            if (staff == null) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Utilisateur non trouvé");
-            }
-    
-            if (staff.getPrivilege() != 0) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Accès refusé : Seul un Super Admin");
-            }
-=======
     public ResponseEntity<Void> deleteStaff(
         @PathVariable int id,
         @RequestHeader("Custom-Auth") String userDatas) throws UnauthentifiedException {
@@ -210,8 +125,6 @@ public class StaffRestController {
         if (!isSuperAdmin) {
             throw new UnauthorizedException("L'utilisateur doit être Super Admin pour utiliser cette fonctionnalité");
         }
->>>>>>> 58b39e1 (Implementation of privilege checks and addition of 2 unit tests)
-
         service.deleteStaff(id);
         return ResponseEntity.noContent().build();
     }

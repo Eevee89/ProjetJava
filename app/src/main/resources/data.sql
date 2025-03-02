@@ -25,16 +25,16 @@ INSERT INTO address (street, city, zip_code) VALUES ('5 Chemin de la Tour Carill
 INSERT INTO address (street, city, zip_code) VALUES ('8 Rue du marché', 'Dijon', '21000');
 
 -- Add some patients
-INSERT INTO patient (first_name, last_name, gender, birth_date, email, phone, address_id)
-VALUES ('Yves', 'Remort', false, '01/01/2000', 'yves.remort@nomail.fake', '0123456789', 3);
+INSERT INTO patient (first_name, last_name, gender, birth_date, email, phone, address_id, password)
+VALUES ('Yves', 'Remort', false, '01/01/2000', 'yves.remort@nomail.fake', '0123456789', 3, '0123456789');
 
-INSERT INTO patient (first_name, last_name, gender, birth_date, email, phone, address_id)
-VALUES ('Gaspard', 'Touze', false, '14/07/208', 'gaspard.touze69@hotmail.com', '0987654321', 4);
+INSERT INTO patient (first_name, last_name, gender, birth_date, email, phone, address_id, password)
+VALUES ('Gaspard', 'Touze', false, '14/07/2008', 'gaspard.touze69@hotmail.com', '0987654321', 4, 'p4ssw0rd');
 
 -- Add some centers
 
-INSERT INTO center (phone, address_id) VALUES ('0912121212', 1);
-INSERT INTO center (phone, address_id) VALUES ('0915151515', 2);
+INSERT INTO center (phone, address_id, name) VALUES ('0912121212', 1, 'Maison de santé');
+INSERT INTO center (phone, address_id, name) VALUES ('0915151515', 2, 'Hôpital CHU');
 
 -- Add some staff
 

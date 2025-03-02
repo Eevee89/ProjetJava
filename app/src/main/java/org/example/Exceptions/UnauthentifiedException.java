@@ -1,6 +1,7 @@
 package org.example.Exceptions;
 
 public class UnauthentifiedException extends Exception {
+
     public UnauthentifiedException() {
         super("Utilisateur non authentifié");
     }
@@ -8,4 +9,5 @@ public class UnauthentifiedException extends Exception {
     public UnauthentifiedException(String message) {
         super(message);
     }
+
 }
