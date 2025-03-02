@@ -3,6 +3,8 @@ package org.example.Controllers;
 import java.util.List;
 import java.util.Arrays;
 
+import org.example.Entities.AuthHeader;
+import org.example.Services.AuthService;
 import org.example.Entities.Staff;
 import org.example.Exceptions.StaffNotFoundException;
 import org.example.Services.StaffService;
@@ -17,8 +19,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriBuilder;
+import com.google.gson.Gson;
+import org.example.Exceptions.UnauthentifiedException;
+import org.example.Exceptions.UnauthorizedException;
+
 
 @RestController
 public class StaffRestController {
@@ -26,18 +34,21 @@ public class StaffRestController {
     @Autowired
     private StaffService service;
 
+    @Autowired
+    private AuthService authService;
+
     // Avoir la liste des médecins
     @GetMapping("/doctors")
     public ResponseEntity<?> findAll(
         @RequestParam(name = "centers", required = false) String center,
         @RequestParam(name = "day", required = false) String day,
         @RequestParam(name = "morning", required = false) String morning,
-        @RequestParam(name = "staffPrivilege") int staffPrivilege) {
+        @RequestHeader("Custom-Auth") String userDatas) throws UnauthentifiedException {
 
-    // Vérifier l'autorisation : Seuls le Super Admin (0) et les Administrateurs de centre (1) peuvent accéder
-    if (staffPrivilege != 0 && staffPrivilege != 1) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Accès refusé : Seul un Super Admin ou un Administrateur peut voir la liste des médecins !");
-    }
+        boolean isAuth = authService.authentify(userDatas);
+        if (!isAuth) {
+            throw new UnauthentifiedException();
+        }
 
     // Vérifier si "center" est null ou vide
     int[] centers = (center != null && !center.isEmpty())
@@ -55,37 +66,95 @@ public class StaffRestController {
 
     // Ajouter un membre du staff (Super Admin ou Admin)
     @PostMapping("/staff")
-    public ResponseEntity<Staff> createStaff(@RequestBody Staff staff) {
+    public ResponseEntity<Staff> createStaff(
+        @RequestBody Staff staff,
+        @RequestHeader("Custom-Auth") String userDatas) throws UnauthentifiedException {
+        
+        boolean isAuth = authService.authentify(userDatas);
+        if (!isAuth) {
+            throw new UnauthentifiedException();
+        }
+    
+        boolean isSuperAdmin = authService.isSuperAdmin(userDatas);
+        boolean isAdmin = authService.isAdmin(userDatas);
+        if (!isSuperAdmin && !isAdmin) {
+            throw new UnauthorizedException("L'utilisateur doit être Super Admin ou admin pour utiliser cette fonctionnalité");
+        }
+
         Staff newStaff = service.saveStaff(staff);
-        return ResponseEntity.ok(newStaff);
+        return ResponseEntity.ok("Nouveau Staff crée");
     }
 
-
+    // Modifier les informations d'un Staff (Admin ou SuperAdmin)
     @PutMapping("/{id}")
-    public ResponseEntity<Staff> updateStaff(@PathVariable int id, @RequestBody Staff staff) {
+    public ResponseEntity<Staff> updateStaff(
+        @PathVariable int id,
+        @RequestBody Staff staff,
+        @RequestHeader("Custom-Auth") String userDatas) throws UnauthentifiedException {
+        
+        boolean isAuth = authService.authentify(userDatas);
+        if (!isAuth) {
+            throw new UnauthentifiedException();
+        }
+    
+        boolean isSuperAdmin = authService.isSuperAdmin(userDatas);
+        boolean isAdmin = authService.isAdmin(userDatas);
+        if (!isSuperAdmin && !isAdmin) {
+            throw new UnauthorizedException("L'utilisateur doit être Super Admin ou admin pour utiliser cette fonctionnalité");
+        }
         try {
-            Staff updatedStaff = service.updateStaff(id, staff);
-            return ResponseEntity.ok(updatedStaff);
+            Staff updatedStaff = service.updateStaff(id, newStaff);
+            return ResponseEntity.ok("Mise à jour réussie !");
         } catch (StaffNotFoundException e) {
             return ResponseEntity.notFound().build(); // Retourne 404 si le staff n'existe pas
         }
     }
 
+    // Supprimer un Staff (SuperAdmin)
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteStaff(@PathVariable int id) {
+    public ResponseEntity<Void> deleteStaff(
+        @PathVariable int id,
+        @RequestHeader("Custom-Auth") String userDatas) throws UnauthentifiedException {
+        
+        boolean isAuth = authService.authentify(userDatas);
+        if (!isAuth) {
+            throw new UnauthentifiedException();
+        }
+
+        boolean isSuperAdmin = authService.isSuperAdmin(userDatas);
+        if (!isSuperAdmin) {
+            throw new UnauthorizedException("L'utilisateur doit être Super Admin pour utiliser cette fonctionnalité");
+        }
         service.deleteStaff(id);
         return ResponseEntity.noContent().build();
     }
 
-    // Récupérer tous les médecins d'un centre spécifique
-    @GetMapping("/doctors/center/{centerId}")
-    public List<Staff> findDoctorsByCenter(@PathVariable int centerId) {
-    return service.findDoctorsByCenter(centerId);
-    }
-
     // Récupérer tous les administrateurs
     @GetMapping("/admins")
-    public List<Staff> findAllAdmins() {
+    public List<Staff> findAllAdmins(
+        @RequestHeader("Custom-Auth") String userDatas) throws UnauthentifiedException {
+
+        boolean isAuth = authService.authentify(userDatas);
+        if (!isAuth) {
+            throw new UnauthentifiedException();
+        }
+        
+        boolean isSuperAdmin = authService.isSuperAdmin(userDatas);
+        boolean isAdmin = authService.isAdmin(userDatas);
+        if (!isSuperAdmin && !isAdmin) {
+            throw new UnauthorizedException("L'utilisateur doit être Super Admin ou admin pour utiliser cette fonctionnalité");
+        }
+        
     return service.findAllAdmins();
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<String> handle(UnauthentifiedException ex){
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<String> handleUnauthorized(UnauthorizedException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
     }
 }

@@ -63,6 +63,18 @@ public class StaffService {
     public List<Staff> findAllAdmins() {
         return repository.findByPrivilege(1);
     }
-    
+
+    public Staff findByEmail(String email) {
+        return repository.findByEmail(email);
+    }
+
+    // Vérification du mail et du mot de passe
+    public boolean auth(String email, String password) { 
+        // Récupérer le staff associé à l'email
+        Staff staff = repository.findByEmail(email);
+
+        // Vérifier si l'utilisateur existe et si le mot de passe correspond
+        return staff != null && staff.getPassword().equals(password);
+    }
 }
 

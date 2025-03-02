@@ -24,10 +24,6 @@ public class CenterService {
         return centerRepository.save(center);
     }
 
-    public List<Center> getAllCenters() {
-        return centerRepository.findAll();
-    }
-
     public Center updateCenter(int id, Center updatedCenter) {
         return centerRepository.findById(id)
                 .map(center -> {
@@ -50,4 +46,10 @@ public class CenterService {
     public List<String> getAllCities() {
         return addressRepository.findAllCentersCities();
     }
+
+    public List<Center> findAll() {
+        return centerRepository.findAll();
+    }
+
+
 }

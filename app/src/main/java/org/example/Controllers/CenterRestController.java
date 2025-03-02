@@ -2,9 +2,13 @@ package org.example.Controllers;
 
 import java.util.List;
 import org.example.Entities.Center;
+import org.example.Entities.Staff;
+import org.example.Entities.AuthHeader;
 import org.example.Exceptions.UnauthentifiedException;
+import org.example.Exceptions.UnauthorizedException;
 import org.example.Services.AuthService;
 import org.example.Services.CenterService;
+import org.example.Services.StaffService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +25,11 @@ public class CenterRestController {
     @Autowired
     private CenterService centerService;
 
+
+    @Autowired
+    private StaffService staffService;
+
+   
     @GetMapping("api/centers")
     public List<Center> findAll(@RequestHeader("Custom-Auth") String userDatas) throws UnauthentifiedException {
         boolean isAuth = authService.authentify(userDatas);
@@ -28,6 +37,22 @@ public class CenterRestController {
             throw new UnauthentifiedException();
         }
         
+        return centerService.getAllCenters();
+
+    }
+
+    @GetMapping("/cities")
+    public List<String> findAllCities(@RequestHeader("Custom-Auth") String userDatas) {
+        Gson gson = new Gson();
+        AuthHeader datas = gson.fromJson(userDatas, AuthHeader.class);
+
+        System.out.println("\n\n ----- \n\n");
+        System.out.println(datas.email);
+        System.out.println(datas.password);
+        System.out.println("\n\n ----- \n\n");
+        
+        return centerService.getAllCities();
+
         return service.findAll();
     }
 
@@ -40,34 +65,44 @@ public class CenterRestController {
     @PostMapping
     public ResponseEntity<?> createCenter(
         @RequestBody Center center,
-        @RequestHeader("staffPrivilege") int staffPrivilege // Récupérer le privilège depuis les headers
-    ) {
-    // Vérifier si l'utilisateur est Super Admin
-    if (staffPrivilege != 0) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Accès refusé : Seul un Super Admin a l'autorisation");
-    }
-    Center newCenter = centerService.saveCenter(center);
-    return ResponseEntity.ok(newCenter);
+
+        @RequestHeader("Custom-Auth") String userDatas) throws UnauthentifiedException{
+
+        boolean isAuth = authService.authentify(userDatas);
+        if (!isAuth) {
+            throw new UnauthentifiedException();
+        }
+
+        boolean isSuperAdmin = authService.isSuperAdmin(userDatas);
+        if (!isSuperAdmin) {
+            throw new UnauthorizedException("L'utilisateur doit être Super Admin pour utiliser cette fonctionnalité");
+        }
+
+        Center newCenter = centerService.saveCenter(center);
+        return ResponseEntity.ok(newCenter);
     }
 
-
-
-    // Lister tous les centres
-    @GetMapping
-    public List<Center> getAllCenters() {
-        return centerService.getAllCenters();
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<String> handleUnauthorized(UnauthorizedException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
     }
+
 
     // Modifier un centre (seulement pour le Super Admin)
     @PutMapping("/{id}")
     public ResponseEntity<?> updateCenter(
             @PathVariable int id,
             @RequestBody Center updatedCenter,
-            @RequestHeader("staffPrivilege") int staffPrivilege // Privilège de l'utilisateur
-    ) {
-        // Vérifier si l'utilisateur est Super Admin
-        if (staffPrivilege != 0) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Accès refusé : Seul un Super Admin peut modifier un centre.");
+            @RequestHeader("Custom-Auth") String userDatas) throws UnauthentifiedException {
+
+        boolean isAuth = authService.authentify(userDatas);
+        if (!isAuth) {
+            throw new UnauthentifiedException();
+        }
+
+        boolean isSuperAdmin = authService.isSuperAdmin(userDatas);
+        if (!isSuperAdmin) {
+            throw new UnauthorizedException("L'utilisateur doit être Super Admin pour utiliser cette fonctionnalité");
         }
 
         Center center = centerService.updateCenter(id, updatedCenter);
@@ -78,11 +113,16 @@ public class CenterRestController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteCenter(
             @PathVariable int id,
-            @RequestHeader("staffPrivilege") int staffPrivilege // Privilège de l'utilisateur
-    ) {
-        // Vérifier si l'utilisateur est Super Admin
-        if (staffPrivilege != 0) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Accès refusé : Seul un Super Admin peut supprimer un centre.");
+            @RequestHeader("Custom-Auth") String userDatas) throws UnauthentifiedException {
+
+        boolean isAuth = authService.authentify(userDatas);
+        if (!isAuth) {
+            throw new UnauthentifiedException();
+        }
+
+        boolean isSuperAdmin = authService.isSuperAdmin(userDatas);
+        if (!isSuperAdmin) {
+            throw new UnauthorizedException("L'utilisateur doit être Super Admin pour utiliser cette fonctionnalité");
         }
 
         centerService.deleteCenter(id);

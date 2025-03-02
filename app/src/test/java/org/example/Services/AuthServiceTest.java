@@ -1,5 +1,9 @@
 package org.example.Services;
 
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.mockito.Mockito.*;
 import com.google.gson.Gson;
 import org.example.Entities.AuthHeader;
 import org.example.Repositories.PatientRepository;
@@ -9,28 +13,60 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
+import org.example.Entities.Staff;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+
 
 class AuthServiceTest {
 
     @Mock
     private PatientRepository patientRepository;
-
+  
     @Mock
     private StaffRepository staffRepository;
+
+    private Gson gson;
 
     @InjectMocks
     private AuthService authService;
 
-    private Gson gson;
-
-    @BeforeEach
+     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
         gson = new Gson();
     }
+
+    @Test
+    void testIsSuperAdmin() {
+        String adminJson = "{\"email\":\"admin@example.com\", \"role\":\"STAFF\"}";
+
+        // Simule un staff avec privilège 0 (Super Admin)
+        Staff mockStaff = new Staff();
+        mockStaff.setPrivilege(0);
+        when(staffRepository.findStaffByEmail("admin@example.com")).thenReturn(mockStaff);
+
+        boolean result = authService.isSuperAdmin(adminJson);
+
+        assertTrue(result, "L'utilisateur doit être reconnu comme Super Admin");
+    }
+
+    @Test
+    void testIsNotSuperAdmin() {
+        // Un utilisateur qui n'est pas Super Admin
+        String userJson = "{\"email\":\"user@example.com\", \"role\":\"STAFF\"}";
+
+        // Simuler un utilisateur STAFF avec un privilège 1 (Admin, pas Super Admin)
+        Staff mockStaff = new Staff();
+        mockStaff.setPrivilege(1); // Admin, mais pas Super Admin (0)
+
+        when(staffRepository.findStaffByEmail("user@example.com")).thenReturn(mockStaff);
+
+        boolean result = authService.isSuperAdmin(userJson);
+
+        assertFalse(result, "L'utilisateur ne doit pas être reconnu comme Super Admin");
+    }
+}
+
 
     @Test
     void authentify_validUserCredentials() {

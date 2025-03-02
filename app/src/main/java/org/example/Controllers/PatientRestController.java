@@ -1,8 +1,8 @@
 package org.example.Controllers;
-
 import java.net.URI;
 import java.net.URISyntaxException;
-
+import java.util.List;
+import org.example.Exceptions.UnauthentifiedException;
 import org.example.Entities.Patient;
 import org.example.Services.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
