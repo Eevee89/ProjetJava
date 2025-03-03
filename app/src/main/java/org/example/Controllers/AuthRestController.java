@@ -1,5 +1,6 @@
 package org.example.Controllers;
 
+import org.example.Exceptions.UnauthentifiedException;
 import org.example.Services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

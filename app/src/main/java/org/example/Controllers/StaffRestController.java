@@ -82,7 +82,8 @@ public class StaffRestController {
         }
 
         Staff newStaff = service.saveStaff(staff);
-        return ResponseEntity.ok("Nouveau Staff crée");
+        return ResponseEntity.ok(newStaff);
+
     }
 
     // Modifier les informations d'un Staff (Admin ou SuperAdmin)
@@ -103,8 +104,9 @@ public class StaffRestController {
             throw new UnauthorizedException("L'utilisateur doit être Super Admin ou admin pour utiliser cette fonctionnalité");
         }
         try {
-            Staff updatedStaff = service.updateStaff(id, newStaff);
-            return ResponseEntity.ok("Mise à jour réussie !");
+            Staff updatedStaff = service.updateStaff(id, staff);
+            return ResponseEntity.ok(updatedStaff);
+
         } catch (StaffNotFoundException e) {
             return ResponseEntity.notFound().build(); // Retourne 404 si le staff n'existe pas
         }
