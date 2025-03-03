@@ -2,6 +2,7 @@ package org.example.Entities;
 
 import java.util.List;
 
+import jakarta.persistence.Table;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -13,6 +14,7 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 
 @Entity
+@Table(name = "Staff")
 public class Staff {
 
     @Id
@@ -49,12 +51,14 @@ public class Staff {
                inverseJoinColumns = @JoinColumn(name = "work_time_id"))
     private List<WorkTime> workTimes;
 
-    public Staff(int id, String firstName, String lastName, String phone, int privilege) {
+    public Staff(int id, String firstName, String lastName, String phone, int privilege, String email, String password) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.phone = phone;
         this.privilege = privilege;
+        this.email = email;
+        this.password = password;
     }
 
     public Staff() {
@@ -109,7 +113,7 @@ public class Staff {
     }
 
     public String getPassword(){
-        return email;
+        return password;
     }
     
     public void setPassword(String password){
