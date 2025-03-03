@@ -26,15 +26,6 @@ public interface StaffRepository extends JpaRepository<Staff, Integer> {
            "WHERE s.privilege = 0 AND w.id = :worktime AND c.id = :center")
     public List<Staff> findWorkingByCenter(@Param("worktime") int worktime, @Param("center") int center);
 
-    // Vérifier si un staff existe avec un ID donné
-    @Query("SELECT EXISTS (SELECT 1 FROM staff WHERE id = :id)")
-    boolean existsById(int id);
-
-    // Trouver tous les médecins d'un centre
-    @Query("SELECT s FROM Staff s WHERE s.privilege = :privilege")
-    List<Staff> findByPrivilegeAndCenters_Id(int privilege, int centerId);
-
-
     // Trouver tous les administrateurs
     @Query("SELECT s FROM Staff s JOIN s.centers c WHERE s.privilege = :privilege AND c.id = :centerId")
     List<Staff> findByPrivilege(int privilege);
@@ -50,4 +41,6 @@ public interface StaffRepository extends JpaRepository<Staff, Integer> {
 
     @Query("SELECT s FROM Staff s WHERE s.email = :email")
     Staff findStaffByEmail(@Param("email") String email);
+
+    List<Staff> findByCenters_Id(int centerId);
 }

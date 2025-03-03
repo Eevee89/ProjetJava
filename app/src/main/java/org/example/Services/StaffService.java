@@ -56,9 +56,6 @@ public class StaffService {
             throw new RuntimeException("Impossible de supprimer : Staff introuvable avec l'ID : " + id);
         }
     }
-    public List<Staff> findDoctorsByCenter(int centerId) {
-        return repository.findByPrivilegeAndCenters_Id(2, centerId);
-    }
     
     public List<Staff> findAllAdmins() {
         return repository.findByPrivilege(1);
@@ -66,6 +63,10 @@ public class StaffService {
 
     public Staff findByEmail(String email) {
         return repository.findByEmail(email);
+    }
+
+    public List<Staff> findByCenter(int center_id) {
+        return repository.findByCenters_Id(center_id);
     }
 
     // Vérification du mail et du mot de passe
