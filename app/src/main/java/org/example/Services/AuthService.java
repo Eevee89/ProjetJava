@@ -14,10 +14,16 @@ import org.springframework.stereotype.Service;
 public class AuthService {
 
     @Autowired
+    private PatientRepository patientRepository;
 
-    private PatientRepository repository;
+    @Autowired
+    private StaffRepository staffRepository;
 
     public boolean authentify(String jsonString) {
+        if (jsonString == null || jsonString.isEmpty()) {
+            return false;
+        }
+
         Gson gson = new Gson();
         AuthHeader datas = gson.fromJson(jsonString, AuthHeader.class);
       
@@ -100,4 +106,15 @@ public class AuthService {
         }
         return true;
     }
+
+    public boolean isStaff(String jsonString) {
+        Gson gson = new Gson();
+        AuthHeader datas = gson.fromJson(jsonString, AuthHeader.class);
+
+        if (datas.role.equals("STAFF")) {
+            return true;
+        }
+        return false;
+    }
+
 }

@@ -39,12 +39,9 @@ public interface StaffRepository extends JpaRepository<Staff, Integer> {
     @Query("SELECT s FROM Staff s JOIN s.centers c WHERE s.privilege = :privilege AND c.id = :centerId")
     List<Staff> findByPrivilege(int privilege);
 
-<<<<<<< HEAD
     // Trouve le staff à partir d'un mail
     Staff findByEmail(String email);
-
     
-=======
     @Query("SELECT count(s) FROM Staff s WHERE s.email = :email")
     int countByEmail(@Param("email") String email);
 
@@ -53,5 +50,4 @@ public interface StaffRepository extends JpaRepository<Staff, Integer> {
 
     @Query("SELECT s FROM Staff s WHERE s.email = :email")
     Staff findStaffByEmail(@Param("email") String email);
->>>>>>> 58b39e1 (Implementation of privilege checks and addition of 2 unit tests)
 }

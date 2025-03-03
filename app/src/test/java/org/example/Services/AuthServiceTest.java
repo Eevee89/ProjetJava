@@ -65,8 +65,6 @@ class AuthServiceTest {
 
         assertFalse(result, "L'utilisateur ne doit pas être reconnu comme Super Admin");
     }
-}
-
 
     @Test
     void authentify_validUserCredentials() {

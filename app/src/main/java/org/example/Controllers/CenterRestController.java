@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriBuilder;
 import org.springframework.web.bind.annotation.*;
+import com.google.gson.Gson;
 
 @RestController
 @RequestMapping("/api/centers")
@@ -24,7 +25,6 @@ public class CenterRestController {
 
     @Autowired
     private CenterService centerService;
-
 
     @Autowired
     private StaffService staffService;
@@ -37,7 +37,7 @@ public class CenterRestController {
             throw new UnauthentifiedException();
         }
         
-        return centerService.getAllCenters();
+        return centerService.findAll();
 
     }
 
@@ -52,8 +52,6 @@ public class CenterRestController {
         System.out.println("\n\n ----- \n\n");
         
         return centerService.getAllCities();
-
-        return service.findAll();
     }
 
     @ExceptionHandler
