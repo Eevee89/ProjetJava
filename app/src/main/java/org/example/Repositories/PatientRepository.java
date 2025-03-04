@@ -36,4 +36,6 @@ public interface PatientRepository extends JpaRepository<Patient, Integer> {
     @Query("UPDATE Patient p SET p.vaccines = :vaccines WHERE p.id = :id")
     void updateVaccinesById(@Param("id") int id, @Param("vaccines") List<String> vaccines);
 
+    @Query("SELECT p FROM Patient p WHERE p.email LIKE CONCAT('%', :email, '%')")
+    List<Patient> findByEmailContaining(@Param("email") String email);
 } 

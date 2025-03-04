@@ -18,8 +18,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.example.Entities.AuthHeader;
 import org.example.Services.AuthService;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 public class PatientRestController {
 
     @Autowired
@@ -35,7 +37,7 @@ public class PatientRestController {
     }
 
     // Récupérer tous les patients
-    @GetMapping
+    @GetMapping("api/patients")
     public ResponseEntity<List<Patient>> getAllPatients(
         @RequestHeader("Custom-Auth") String userDatas) throws UnauthentifiedException {
             
@@ -56,9 +58,9 @@ public class PatientRestController {
         return ResponseEntity.ok(patients);
     }
 
-     @GetMapping("/search")
+    @GetMapping("api/patients/search")
     public ResponseEntity<List<Patient>> searchPatients(
-        @RequestParam String[] name,
+        @RequestParam(name = "email") String email,
         @RequestHeader("Custom-Auth") String userDatas) throws UnauthentifiedException {
             
         boolean isAuth = authService.authentify(userDatas);
@@ -68,10 +70,11 @@ public class PatientRestController {
         
         boolean isStaff = authService.isStaff(userDatas);
         if (!isStaff) {
-            throw new UnauthorizedException("L'utilisateur doit être Staff utiliser cette fonctionnalité");
+            throw new UnauthorizedException("L'utilisateur doit être Staff pour utiliser cette fonctionnalité");
         }
         
-        List<Patient> patients = patientService.findByName(name);
+        List<Patient> patients = patientService.findByEmail(email);
+
         if (patients.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
