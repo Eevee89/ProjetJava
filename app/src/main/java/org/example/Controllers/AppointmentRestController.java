@@ -21,9 +21,13 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/api/appointments")
+@CrossOrigin(origins = "http://localhost:4200")
 public class AppointmentRestController {
     
     @Autowired
@@ -38,35 +42,31 @@ public class AppointmentRestController {
     @Autowired
     private PatientService patientService;
 
-    @PostMapping("api/appointments/create")
-    public ResponseEntity<Appointment> create(@RequestHeader("Custom-Auth") String userDatas, @RequestBody Appointment a) throws URISyntaxException, UnauthentifiedException
-    {
+    @PostMapping("")
+    public ResponseEntity<Appointment> createAppointment(@RequestBody Appointment a, @RequestHeader("Custom-Auth") String userDatas) 
+            throws UnauthentifiedException {
         boolean isAuth = authService.authentify(userDatas);
         if (!isAuth) {
             throw new UnauthentifiedException();
         }
 
-        System.out.println(a.gettime());
+        System.out.println(a.getTime());
 
-        int doctorId = service.isBusy(a.getCenterId().getId(), a.gettime());
+        int doctorId = service.isBusy(a.getCenter().getId(), a.getTime());
         if (doctorId == -1) {
             return ResponseEntity.badRequest().build();
         }
-        else {
-            int patientId = authService.findIdByEmail(userDatas);
-            try {
-                Staff doctor = staffService.findOne(doctorId);
-                a.setDoctorId(doctor);
-                Patient patient = patientService.findOne(patientId);
-                a.setPatientId(patient);
-                service.create(a);
-                return ResponseEntity.created(new URI("appointment/"+a.getId())).build();
-            } catch (StaffNotFoundException s) {
-                return ResponseEntity.internalServerError().build();
-            } catch (PatientNotFoundException p) {
-                return ResponseEntity.internalServerError().build();
-            }
+
+        Staff doctor = staffService.findById(doctorId);
+        Patient patient = patientService.findById(a.getPatient().getId());
+
+        if (doctor != null && patient != null) {
+            a.setDoctor(doctor);
+            a.setPatient(patient);
+            return ResponseEntity.ok(service.save(a));
         }
+
+        return ResponseEntity.badRequest().build();
     }
 
     @ExceptionHandler

@@ -18,6 +18,7 @@ import com.google.gson.Gson;
 
 @RestController
 @RequestMapping("/api/centers")
+@CrossOrigin(origins = "http://localhost:4200")
 public class CenterRestController {
 
     @Autowired
@@ -29,16 +30,20 @@ public class CenterRestController {
     @Autowired
     private StaffService staffService;
 
-   
-    @GetMapping("api/centers")
-    public List<Center> findAll(@RequestHeader("Custom-Auth") String userDatas) throws UnauthentifiedException {
+    @GetMapping("")
+    public ResponseEntity<List<Center>> findAll(@RequestHeader("Custom-Auth") String userDatas) throws UnauthentifiedException {
         boolean isAuth = authService.authentify(userDatas);
         if (!isAuth) {
             throw new UnauthentifiedException();
         }
         
-        return centerService.findAll();
+        boolean isSuperAdmin = authService.isSuperAdmin(userDatas);
+        if (!isSuperAdmin) {
+            throw new UnauthorizedException("L'utilisateur doit être Super Admin pour utiliser cette fonctionnalité");
+        }
 
+        List<Center> centers = centerService.findAll();
+        return ResponseEntity.ok(centers);
     }
 
     @GetMapping("/cities")
@@ -125,5 +130,25 @@ public class CenterRestController {
 
         centerService.deleteCenter(id);
         return ResponseEntity.noContent().build();
+    }
+
+    // Ajouter un endpoint de recherche
+    @GetMapping("/search")
+    public ResponseEntity<List<Center>> searchCenters(
+            @RequestParam String query,
+            @RequestHeader("Custom-Auth") String userDatas) 
+            throws UnauthentifiedException {
+        boolean isAuth = authService.authentify(userDatas);
+        if (!isAuth) {
+            throw new UnauthentifiedException();
+        }
+        
+        boolean isSuperAdmin = authService.isSuperAdmin(userDatas);
+        if (!isSuperAdmin) {
+            throw new UnauthorizedException("L'utilisateur doit être Super Admin pour utiliser cette fonctionnalité");
+        }
+
+        List<Center> centers = centerService.searchCenters(query);
+        return ResponseEntity.ok(centers);
     }
 }

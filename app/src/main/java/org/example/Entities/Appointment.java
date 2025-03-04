@@ -10,8 +10,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "appointment")
 public class Appointment {
 
     @Id
@@ -19,22 +21,26 @@ public class Appointment {
     private int id;
 
     @ManyToOne
+    @JoinColumn(name = "patient_id")
     private Patient patient;
 
     @ManyToOne
-    private Staff medecin;
+    @JoinColumn(name = "doctor_id")
+    private Staff doctor;
 
     @ManyToOne
+    @JoinColumn(name = "center_id")
     private Center center;
 
-    private LocalDateTime date;
+    @Column(name = "time")
+    private LocalDateTime time;
 
     public Appointment(int id, Center centerId, Patient patientId, Staff doctorId, Date time) {
         this.id = id;
         this.center = centerId;
         this.patient = patientId;
-        this.medecin = doctorId;
-        this.date = time.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDateTime();
+        this.doctor = doctorId;
+        this.time = time.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDateTime();
     }
 
     public Appointment() {
@@ -65,18 +71,18 @@ public class Appointment {
     }
 
     public Staff getDoctor() {
-        return medecin;
+        return doctor;
     }
 
     public void setDoctor(Staff doctor) {
-        this.medecin = doctor;
+        this.doctor = doctor;
     }
 
-    public LocalDateTime getDate() {
-        return date;
+    public LocalDateTime getTime() {
+        return time;
     }
 
-    public void setDate(LocalDateTime date) {
-        this.date = date;
+    public void setTime(LocalDateTime time) {
+        this.time = time;
     }
 }

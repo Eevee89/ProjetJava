@@ -175,6 +175,34 @@ public class StaffRestController {
         return ResponseEntity.ok(doctors);
     }
 
+    @GetMapping("/api/admins/search")
+    public ResponseEntity<List<Staff>> searchAdmins(
+            @RequestParam String email,
+            @RequestHeader("Custom-Auth") String userDatas) throws UnauthentifiedException {
+        
+        System.out.println("Recherche d'admins demandée pour email: " + email);
+        
+        boolean isAuth = authService.authentify(userDatas);
+        if (!isAuth) {
+            throw new UnauthentifiedException();
+        }
+
+        boolean isSuperAdmin = authService.isSuperAdmin(userDatas);
+        if (!isSuperAdmin) {
+            throw new UnauthorizedException("L'utilisateur doit être Super Admin pour utiliser cette fonctionnalité");
+        }
+
+        List<Staff> admins = service.findAdminsByEmail(email);
+        
+        if (admins.isEmpty()) {
+            System.out.println("Aucun admin trouvé");
+            return ResponseEntity.noContent().build();
+        }
+        
+        System.out.println("Nombre d'admins retournés: " + admins.size());
+        return ResponseEntity.ok(admins);
+    }
+
     @ExceptionHandler
     public ResponseEntity<String> handle(UnauthentifiedException ex){
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

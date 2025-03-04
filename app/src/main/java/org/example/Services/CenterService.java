@@ -51,5 +51,8 @@ public class CenterService {
         return centerRepository.findAll();
     }
 
+    public List<Center> searchCenters(String query) {
+        return centerRepository.findByNameContainingIgnoreCaseOrAddress_CityContainingIgnoreCase(query, query);
+    }
 
 }

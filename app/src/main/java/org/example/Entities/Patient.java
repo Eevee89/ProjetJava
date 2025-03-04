@@ -49,7 +49,7 @@ public class Patient {
 
     private Date birthDate;
 
-    @OneToMany(mappedBy = "patientId")
+    @OneToMany(mappedBy = "patient")
     private List<Appointment> appointments;
 
     @Column(nullable = false)
