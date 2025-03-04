@@ -27,39 +27,37 @@ public class AuthService {
         Gson gson = new Gson();
         AuthHeader datas = gson.fromJson(jsonString, AuthHeader.class);
       
-        int count = 0;
-        if (datas.role.equals("USER")) {
-            count = patientRepository.countByEmail(datas.email);
+        // Vérification pour STAFF
+        if ("STAFF".equals(datas.role)) {
+            Staff staff = staffRepository.findByEmail(datas.email);
+            if (staff == null) {
+                return false;
+            }
+            return staff.getPassword().equals(datas.password);
         }
 
-        if (datas.role.equals("STAFF")){
-            count = staffRepository.countByEmail(datas.email);
-        }
-        
-        if (count == 0) {
-            return false;
-        }
-
-        String password = "";
-
-        if (datas.role.equals("USER")) {
-            password = patientRepository.findPasswordWithEmail(datas.email);
+        // Vérification pour USER
+        if ("USER".equals(datas.role)) {
+            int count = patientRepository.countByEmail(datas.email);
+            if (count == 0) {
+                return false;
+            }
+            String password = patientRepository.findPasswordWithEmail(datas.email);
+            return password != null && password.equals(datas.password);
         }
 
-        if (datas.role.equals("STAFF")) {
-            password = staffRepository.findPasswordWithEmail(datas.email);
-        }
-
-        if (!password.equals(datas.password)) {
-            return false;
-        }
-
-        return true;
+        return false;
     }
 
     public String findNameByEmail(String jsonString) {
         Gson gson = new Gson();
         AuthHeader datas = gson.fromJson(jsonString, AuthHeader.class);
+        
+        if ("STAFF".equals(datas.role)) {
+            Staff staff = staffRepository.findByEmail(datas.email);
+            return staff.getFirstName() + " " + staff.getLastName();
+        }
+        
         return patientRepository.findNameByEmail(datas.email);
     }
 
@@ -110,11 +108,13 @@ public class AuthService {
     public boolean isStaff(String jsonString) {
         Gson gson = new Gson();
         AuthHeader datas = gson.fromJson(jsonString, AuthHeader.class);
+        return "STAFF".equals(datas.role);
+    }
 
-        if (datas.role.equals("STAFF")) {
-            return true;
-        }
-        return false;
+    public Staff findStaffByEmail(String jsonString) {
+        Gson gson = new Gson();
+        AuthHeader datas = gson.fromJson(jsonString, AuthHeader.class);
+        return staffRepository.findByEmail(datas.email);
     }
 
 }
