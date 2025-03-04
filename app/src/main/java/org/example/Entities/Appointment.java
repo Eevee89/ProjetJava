@@ -1,6 +1,7 @@
 package org.example.Entities;
 
 import java.util.Date;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -18,26 +19,22 @@ public class Appointment {
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "patient_id")
-    private Patient patientId;
+    private Patient patient;
 
     @ManyToOne
-    @JoinColumn(name = "center_id")
-    private Center centerId;
+    private Staff medecin;
 
     @ManyToOne
-    @JoinColumn(name = "doctor_id")
-    private Staff doctorId; // Assuming "doctor" is a type of "Staff"
+    private Center center;
 
-    @Column(nullable = false)
-    private Date time;
+    private LocalDateTime date;
 
     public Appointment(int id, Center centerId, Patient patientId, Staff doctorId, Date time) {
         this.id = id;
-        this.centerId = centerId;
-        this.patientId = patientId;
-        this.doctorId = doctorId;
-        this.time = time;
+        this.center = centerId;
+        this.patient = patientId;
+        this.medecin = doctorId;
+        this.date = time.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDateTime();
     }
 
     public Appointment() {
@@ -51,35 +48,35 @@ public class Appointment {
         this.id = id;
     }
 
-    public Center getCenterId() {
-        return centerId;
+    public Center getCenter() {
+        return center;
     }
 
-    public void setCenterId(Center centerId) {
-        this.centerId = centerId;
+    public void setCenter(Center center) {
+        this.center = center;
     }
 
-    public Patient getPatientId() {
-        return patientId;
+    public Patient getPatient() {
+        return patient;
     }
 
-    public void setPatientId(Patient patientId) {
-        this.patientId = patientId;
+    public void setPatient(Patient patient) {
+        this.patient = patient;
     }
 
-    public Staff getDoctorId() {
-        return doctorId;
+    public Staff getDoctor() {
+        return medecin;
     }
 
-    public void setDoctorId(Staff doctorId) {
-        this.doctorId = doctorId;
+    public void setDoctor(Staff doctor) {
+        this.medecin = doctor;
     }
 
-    public Date gettime() {
-        return time;
+    public LocalDateTime getDate() {
+        return date;
     }
 
-    public void settime(Date time) {
-        this.time = time;
+    public void setDate(LocalDateTime date) {
+        this.date = date;
     }
 }
