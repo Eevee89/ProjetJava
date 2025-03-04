@@ -26,9 +26,11 @@ import org.springframework.web.util.UriBuilder;
 import com.google.gson.Gson;
 import org.example.Exceptions.UnauthentifiedException;
 import org.example.Exceptions.UnauthorizedException;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 public class StaffRestController {
     
     @Autowired
@@ -148,6 +150,29 @@ public class StaffRestController {
         }
         
     return service.findAllAdmins();
+    }
+
+    @GetMapping("api/staff/doctors/search")
+    public ResponseEntity<List<Staff>> searchDoctors(
+        @RequestParam(name = "email") String email,
+        @RequestHeader("Custom-Auth") String userDatas) throws UnauthentifiedException {
+            
+        boolean isAuth = authService.authentify(userDatas);
+        if (!isAuth) {
+            throw new UnauthentifiedException();
+        }
+        
+        boolean isAdmin = authService.isAdmin(userDatas);
+        if (!isAdmin) {
+            throw new UnauthorizedException("L'utilisateur doit être Admin pour utiliser cette fonctionnalité");
+        }
+        
+        List<Staff> doctors = service.findDoctorsByEmail(email);
+
+        if (doctors.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(doctors);
     }
 
     @ExceptionHandler

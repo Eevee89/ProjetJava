@@ -77,5 +77,9 @@ public class StaffService {
         // Vérifier si l'utilisateur existe et si le mot de passe correspond
         return staff != null && staff.getPassword().equals(password);
     }
+
+    public List<Staff> findDoctorsByEmail(String email) {
+        return repository.findDoctorsByEmailContaining(email);
+    }
 }
 
