@@ -53,4 +53,12 @@ public class PatientService {
 
         repository.updateVaccinesById(patientId, vaccines);
     }
+
+    public List<Patient> findByEmail(String email) {
+        return repository.findByEmailContaining(email);
+    }
+
+    public Patient findById(Integer id) {
+        return repository.findById(id).orElse(null);
+    }
 }

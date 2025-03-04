@@ -77,5 +77,21 @@ public class StaffService {
         // Vérifier si l'utilisateur existe et si le mot de passe correspond
         return staff != null && staff.getPassword().equals(password);
     }
+
+    public List<Staff> findDoctorsByEmail(String email) {
+        return repository.findDoctorsByEmailContaining(email);
+    }
+
+    public Staff findById(int id) {
+        return repository.findById(id).orElse(null);
+    }
+
+    public List<Staff> findAdminsByEmail(String email) {
+        System.out.println("Recherche d'admins avec email: " + email);
+        List<Staff> admins = repository.findAdminsByEmailContaining(email);
+        System.out.println("Nombre d'admins trouvés: " + admins.size());
+        admins.forEach(admin -> System.out.println("Admin trouvé: " + admin.getEmail() + " avec privilege: " + admin.getPrivilege()));
+        return admins;
+    }
 }
 

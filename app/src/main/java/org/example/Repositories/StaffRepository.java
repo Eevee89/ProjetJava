@@ -43,4 +43,10 @@ public interface StaffRepository extends JpaRepository<Staff, Integer> {
     Staff findStaffByEmail(@Param("email") String email);
 
     List<Staff> findByCenters_Id(int centerId);
+
+    @Query("SELECT s FROM Staff s WHERE s.email LIKE CONCAT('%', :email, '%') AND s.privilege = 2")
+    List<Staff> findDoctorsByEmailContaining(@Param("email") String email);
+
+    @Query("SELECT DISTINCT s FROM Staff s LEFT JOIN s.centers c WHERE s.privilege = 1 AND s.email LIKE CONCAT('%', :email, '%')")
+    List<Staff> findAdminsByEmailContaining(@Param("email") String email);
 }

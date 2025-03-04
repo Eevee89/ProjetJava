@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 import org.example.Entities.Appointment;
 import org.example.Entities.Staff;
@@ -13,6 +15,8 @@ import org.example.Repositories.StaffRepository;
 import org.example.Repositories.WorkTimeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.data.repository.query.Param;
+import org.springframework.data.jpa.repository.Query;
 
 @Service
 public class AppointmentService {
@@ -26,9 +30,14 @@ public class AppointmentService {
     @Autowired
     private StaffRepository staffRepository;
 
-    public int isBusy(int centerId, Date dateToCheck) {
+    public int isBusy(int centerId, LocalDateTime time) {
+        List<Appointment> appointments = repository.findByCenterAndTime(centerId, time);
+        List<Integer> doctorsIds = appointments.stream()
+            .map(app -> app.getDoctor().getId())
+            .toList();
+
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(dateToCheck);
+        calendar.setTime(Date.from(time.atZone(ZoneId.systemDefault()).toInstant()));
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         int h = calendar.get(Calendar.HOUR_OF_DAY);
@@ -59,9 +68,6 @@ public class AppointmentService {
         List<Staff> doctors = new ArrayList<>(fromCenter);
         doctors.retainAll(working);
 
-        List<Appointment> appointments = repository.findByCenterDoctorAndDate(centerId, calendar.getTime());
-        List<Integer> doctorsIds = appointments.stream().map(app -> app.getDoctorId().getId()).toList();
-
         for (Staff doctor : doctors) {
             if (!doctorsIds.contains(doctor.getId())) {
                 return doctor.getId();
@@ -82,5 +88,9 @@ public class AppointmentService {
 
     public List<Appointment> findAll() {
         return repository.findAll();
+    }
+
+    public Appointment save(Appointment appointment) {
+        return repository.save(appointment);
     }
 }
